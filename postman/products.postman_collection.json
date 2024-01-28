@@ -1,0 +1,454 @@
+{
+  "info": {
+    "_postman_id": "ed3f5b86-fd26-4b96-b0b6-9cf261583ff3",
+    "name": "demo-products",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "5350091"
+  },
+  "item": [
+    {
+      "name": "Create product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"should have 201 status\", () => {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"should have a JSON body\", () => {",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"should have the created body\", () => {",
+              "",
+              "    const jsonPayload = pm.response.json();",
+              "    const product = jsonPayload;",
+              "",
+              "    pm.expect(product).to.have.property(\"id\");",
+              "    pm.expect(product.id).to.be.a(\"number\");",
+              "    pm.expect(product.description).to.eql(\"a description\");",
+              "    pm.expect(product.name).to.eql(\"Kiwi\");",
+              "    pm.expect(product.price).to.eql(100);",
+              "    ",
+              "    postman.setEnvironmentVariable(\"id\", product.id);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"color\": \"black\",\n  \"description\": \"a description\",\n  \"email\": \"email@email.com\",\n  \"expeditionDate\": \"2021-01-12T15:26:45.974Z\",\n  \"expirationDate\": \"2021-01-13T15:26:45.974Z\",\n  \"name\": \"Kiwi\",\n  \"price\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/products",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Creating product without required price property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonPayload = pm.response.json();",
+              "",
+              "pm.test(\"should have 400 status\", () => {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "pm.test(\"should have a JSON body\", () => {",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"color\": \"black\",\n  \"description\": \"a description\",\n  \"email\": \"email@email.com\",\n  \"expeditionDate\": \"2021-01-12T15:26:45.974Z\",\n  \"expirationDate\": \"2021-01-13T15:26:45.974Z\",\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/products",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "products"
+          ]
+        },
+        "description": "This requests is going to send a invalid payload because a lack of required properties, specifically the \"price\" property."
+      },
+      "response": []
+    },
+    {
+      "name": "Get all products",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonPayload = pm.response.json();",
+              "const productsData = jsonPayload;",
+              "",
+              "pm.test(\"should have 200 status\", () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"should have a JSON body\", () => {",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"should retrieve an array of products\", () => {",
+              "    pm.expect(productsData).to.have.property(\"products\");",
+              "    pm.expect(jsonPayload).to.have.property(\"pagination\");",
+              "",
+              "    const products = productsData.products;",
+              "    pm.expect(products).to.be.a(\"array\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/products?firstPage=0&pageSize=10",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "products"
+          ],
+          "query": [
+            {
+              "key": "firstPage",
+              "value": "0"
+            },
+            {
+              "key": "pageSize",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Edit product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonPayload = pm.response.json();",
+              "const updatedProduct = jsonPayload;",
+              "",
+              "pm.test(\"should have 200 status\", () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"should have a JSON body\", () => {",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"should have the created body\", () => {",
+              "    pm.expect(updatedProduct).to.have.property(\"id\");",
+              "    pm.expect(updatedProduct.id).to.be.a(\"number\");",
+              "    pm.expect(updatedProduct.description).to.eql(\"a description\");",
+              "    pm.expect(updatedProduct.name).to.eql(\"a product name\");",
+              "    pm.expect(updatedProduct.price).to.eql(100);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"color\": \"black\",\n  \"description\": \"a description\",\n  \"email\": \"email@email.com\",\n  \"expeditionDate\": \"2021-01-12T15:26:45.974Z\",\n  \"expirationDate\": \"2021-01-13T15:26:45.974Z\",\n  \"name\": \"a product name\",\n  \"price\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/products/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "products",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Editing a product without a required property",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"should have 400 status\", () => {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"description\": \"a description\",\n    \"id\": 2,\n    \"image\": \"an image\",\n    \"name\": \"a product name\",\n    \"price\": 100.00\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/products/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "products",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get product by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonPayload = pm.response.json();",
+              "const product = jsonPayload;",
+              "",
+              "pm.test(\"should have 200 status\", () => {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"should have a JSON body\", () => {",
+              "    pm.response.to.be.withBody;",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"should have the correct product\", () => {",
+              "    pm.expect(product.id).to.eql(parseInt(pm.environment.get(\"id\"), 10));",
+              "    pm.expect(product.description).to.eql(\"a description\");",
+              "    pm.expect(product.name).to.eql(\"a product name\");",
+              "    pm.expect(product.price).to.eql(100);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/products/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "products",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get non-existing product by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const jsonPayload = pm.response.json();",
+              "",
+              "const nonExistingId = postman.getEnvironmentVariable(\"nonExistingId\");",
+              "",
+              "pm.test(\"should have 404 status\", () => {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "",
+              "pm.test(\"should have the correct payload\", () => {",
+              "",
+              "",
+              "    pm.expect(jsonPayload.detail).to.eql(\"Product with id 1123 not found\");",
+              "",
+              "    pm.expect(jsonPayload.title).to.eql(\"Not found\");",
+              "",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/products/{{nonExistingId}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "products",
+            "{{nonExistingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"should have 204 status\", () => {",
+              "    pm.response.to.have.status(204);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/products/{{id}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "products",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
